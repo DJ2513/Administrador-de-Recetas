@@ -65,18 +65,24 @@ def elegir_categoria(lista) -> str:
     return lista[int(eleccion)-1]
 
 
-def mostrar_recetas(ruta) -> Path:
+def mostrar_recetas(ruta) -> list:
+    print("Recetas: ")
     ruta_recetas = Path(ruta)
-    recetas = [x for x in ruta_recetas.iterdir()]
+    recetas = []
+    cont = 1
+    for receta in ruta_recetas.iterdir():
+        nombre = str(receta.name)
+        recetas.append(receta)
+        print(str(cont) + ") " + nombre)
+        cont += 1
+    return recetas
+
+
+def elegir_recetas(lista) -> Path:
     eleccion = 'x'
-    while not eleccion.isnumeric() or int(eleccion) not in range(1, len(recetas)+1):
-        print("Recetas: ")
-        cont = 1
-        for r in recetas:
-            print(str(cont) + ") " + r.name)
-            cont += 1
+    while not eleccion.isnumeric() or int(eleccion) not in range(1, len(lista)+1):
         eleccion = input("Opcion: ")
-    return recetas[int(eleccion)-1]
+    return lista[int(eleccion)-1]
 
 
 def leer_receta(ruta) -> None:
@@ -133,9 +139,15 @@ while finalizar_programa == False:
     if opcion == 1:
         lista_categoria = mostrar_categorias(ruta_origen)
         categoria_seleccionada = elegir_categoria(lista_categoria)
-        receta_seleccionada = mostrar_recetas(categoria_seleccionada)
-        leer_receta(receta_seleccionada)
-        volver_inicio()
+        lista_recetas = mostrar_recetas(categoria_seleccionada)
+        if len(lista_recetas) < 1:
+            print('No hay recetas en esta categoría, intenta con otra.')
+            volver_inicio()
+            continue
+        else:
+            receta_seleccionada = elegir_recetas(lista_recetas)
+            leer_receta(receta_seleccionada)
+            volver_inicio()
     # Crear recetas
     elif opcion == 2:
         lista_categoria = mostrar_categorias(ruta_origen)
@@ -151,9 +163,15 @@ while finalizar_programa == False:
     elif opcion == 4:
         lista_categoria = mostrar_categorias(ruta_origen)
         categoria_seleccionada = elegir_categoria(lista_categoria)
-        receta_seleccionada = mostrar_recetas(categoria_seleccionada)
-        eliminar_receta(receta_seleccionada)
-        volver_inicio()
+        lista_recetas = mostrar_recetas(categoria_seleccionada)
+        if len(lista_recetas) < 1:
+            print('No hay recetas en esta categoría, intenta con otra.')
+            volver_inicio()
+            continue
+        else:
+            receta_seleccionada = elegir_recetas(lista_recetas)
+            eliminar_receta(receta_seleccionada)
+            volver_inicio()
     # Eliminar Categoria
     elif opcion == 5:
         lista_categoria = mostrar_categorias(ruta_origen)
